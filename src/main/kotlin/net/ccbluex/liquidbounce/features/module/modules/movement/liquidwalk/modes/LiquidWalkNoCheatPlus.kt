@@ -56,7 +56,7 @@ internal object LiquidWalkNoCheatPlus : Mode("NoCheatPlus") {
 
         val block = event.state.block
 
-        if (block is LiquidBlock && !player.box.isBlockAtPosition { it is LiquidBlock }) {
+        if (block is LiquidBlock && player.y >= event.pos.y + 0.9) {
             event.shape = Shapes.block()
         }
     }
