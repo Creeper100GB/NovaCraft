@@ -102,6 +102,11 @@ jobs:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build -x test -x detekt
+      - name: Upload JAR as GitHub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: liquidbounce-jar
+          path: build/libs/liquidbounce-*.jar
       - name: Upload artifact
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
