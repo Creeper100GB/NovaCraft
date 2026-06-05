@@ -48,27 +48,6 @@ import net.minecraft.util.Util
 import java.net.InetSocketAddress
 import kotlin.jvm.optionals.getOrNull
 
-
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
- *
- * Copyright (c) 2015 - 2025 CCBlueX
- *
- * LiquidBounce is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * LiquidBounce is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
- *
- */
-
 /**
  * This is a generic Minecraft server that is used to check if a proxy is working. The server also
  * responds to query requests with the client's IP address.
@@ -163,7 +142,9 @@ private fun Proxy.connect(
         override fun initChannel(channel: Channel) {
             try {
                 channel.config().setOption(ChannelOption.TCP_NODELAY, true)
-            } catch (_: ChannelException) {}
+            } catch (e: ChannelException) {
+                logger.debug("Failed to set TCP_NODELAY", e)
+            }
 
             val channelPipeline = channel.pipeline().addLast("timeout", ReadTimeoutHandler(PING_TIMEOUT))
             // Assign proxy before [ClientConnection.addHandlers] to avoid overriding the proxy

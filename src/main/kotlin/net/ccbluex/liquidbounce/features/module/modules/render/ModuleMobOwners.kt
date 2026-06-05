@@ -80,7 +80,6 @@ object ModuleMobOwners : ClientModule("MobOwners", ModuleCategories.RENDER) {
     @Suppress("SwallowedException")
     private fun getFromMojangApi(ownerId: UUID): FormattedCharSequence {
         return uuidNameCache.putIfAbsent(ownerId, LOADING_TEXT) ?: run {
-            // The job will still run even if the module is disabled
             withScope {
                 uuidNameCache[ownerId] = try {
                     val uuidAsString = ownerId.toString().replace("-", "")
@@ -98,6 +97,11 @@ object ModuleMobOwners : ClientModule("MobOwners", ModuleCategories.RENDER) {
 
             LOADING_TEXT
         }
+    }
+
+    override fun onDisabled() {
+        uuidNameCache.clear()
+        super.onDisabled()
     }
 
 }

@@ -44,7 +44,7 @@ object ScriptManager {
     /**
      * A list that holds all the loaded scripts.
      */
-    val scripts = mutableSetOf<PolyglotScript>()
+    val scripts: MutableSet<PolyglotScript> = java.util.concurrent.ConcurrentHashMap.newKeySet()
 
     /**
      * The root directory where all scripts are stored. This directory is created if it does not exist.

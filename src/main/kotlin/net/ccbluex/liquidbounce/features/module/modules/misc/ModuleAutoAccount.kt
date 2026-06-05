@@ -45,7 +45,7 @@ object ModuleAutoAccount : ClientModule(
     aliases = listOf("AutoLogin", "AutoRegister")
 ) {
 
-    private val password by text("Password", "a1b2c3d4")
+    private val password by text("Password", "")
         .doNotIncludeAlways()
     private val delay by intRange("Delay", 3..5, 0..50, "ticks")
 

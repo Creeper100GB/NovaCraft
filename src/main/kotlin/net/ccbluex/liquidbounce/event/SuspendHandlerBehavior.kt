@@ -90,7 +90,7 @@ sealed interface SuspendHandlerBehavior {
                 }
 
                 eventListenerScope.launch(wrappedContext) {
-                    channel!!.send(event)
+                    channel?.send(event)
                 }
             }
         }

@@ -31,6 +31,8 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speed.ModuleSpe
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.withStrafe
 import net.ccbluex.liquidbounce.utils.movement.stopXZVelocity
+import net.ccbluex.liquidbounce.utils.client.chat
+import net.ccbluex.liquidbounce.utils.client.regular
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.world.entity.MoverType
 import kotlin.math.ceil
@@ -56,6 +58,7 @@ class SpeedSentinelDamage(override val parent: ModeValueGroup<*>) : Mode("Sentin
     override fun enable() {
         if (!ModulePingSpoof.enabled) {
             ModulePingSpoof.enabled = true
+            chat(regular("Auto-enabled PingSpoof for SentinelDamage speed mode"))
         }
         hasBeenHurt = false
         damageDelay = 0
@@ -81,7 +84,7 @@ class SpeedSentinelDamage(override val parent: ModeValueGroup<*>) : Mode("Sentin
     }
 
     override fun disable() {
-        player.stopXZVelocity()
+        player?.stopXZVelocity()
     }
 
     @Suppress("unused")

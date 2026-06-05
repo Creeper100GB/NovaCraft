@@ -104,6 +104,9 @@ object ModuleLogoffSpot : ClientModule("LogoffSpot", ModuleCategories.RENDER) {
 
     @Suppress("unused")
     private val worldChangeHandler = handler<WorldChangeEvent> {
+        for (loggedOffPlayer in lastSeenPlayers.values) {
+            mc.level?.removeEntity(loggedOffPlayer.entity.id, Entity.RemovalReason.UNLOADED_TO_CHUNK)
+        }
         lastSeenPlayers.clear()
     }
 

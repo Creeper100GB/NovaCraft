@@ -183,7 +183,7 @@ class GrowableMappableRingBuffer @JvmOverloads constructor(
          * [MappableRingBuffer] to be closed.
          */
         @JvmStatic
-        private val BUFFERS_TO_CLOSE = ObjectArrayList<MappableRingBuffer>()
+        private val BUFFERS_TO_CLOSE = java.util.concurrent.CopyOnWriteArrayList<MappableRingBuffer>()
 
         /**
          * Checks and closes discarded [MappableRingBuffer] instances that are safe to release.

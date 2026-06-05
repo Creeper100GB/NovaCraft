@@ -78,6 +78,7 @@ import java.util.UUID
 
 class AxochatClient {
 
+    @Volatile
     private var channel: Channel? = null
 
     private val serializer = PacketSerializer().apply {
@@ -101,7 +102,7 @@ class AxochatClient {
     }
 
     val isConnected: Boolean
-        get() = channel != null && channel!!.isOpen
+        get() = channel?.isOpen == true
 
     private var isConnecting = false
     var isLoggedIn = false
@@ -192,7 +193,8 @@ class AxochatClient {
     }
 
     fun disconnect() {
-        channel?.writeAndFlush(CloseWebSocketFrame(1000, ""))?.addListener(ChannelFutureListener.CLOSE)
+        val ch = channel
+        ch?.writeAndFlush(CloseWebSocketFrame(1000, ""))?.addListener(ChannelFutureListener.CLOSE)
         channel = null
 
         EventManager.callEvent(ClientChatStateChange(ClientChatStateChange.State.DISCONNECTED))
@@ -258,7 +260,8 @@ class AxochatClient {
      * Send packet to server
      */
     internal fun sendPacket(packet: AxochatPacket.C2S) {
-        channel?.writeAndFlush(TextWebSocketFrame(serializerGson.toJson(packet, AxochatPacket.C2S::class.java)))
+        val ch = channel ?: return
+        ch.writeAndFlush(TextWebSocketFrame(serializerGson.toJson(packet, AxochatPacket.C2S::class.java)))
     }
 
     private fun handleFunctionalPacket(packet: AxochatPacket.S2C) {

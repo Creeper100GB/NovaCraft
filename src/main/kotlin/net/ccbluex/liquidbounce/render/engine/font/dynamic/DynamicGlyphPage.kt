@@ -111,16 +111,25 @@ class DynamicGlyphPage(val atlasSize: Dimension = DEFAULT_ATLAS_SIZE, fontHeight
      * @return Removed chars
      */
     fun optimizeAtlas(): List<Pair<GlyphIdentifier, GlyphRenderInfo>> {
-        // Free everything, create a new allocator and use max(largestFontGlyph.height, medianFontGlyphHeight) as
-        // minimal vertical slice height and the dimensions of the smallest character is minDimension.
+        val removedEntries = glyphMap.map { (key, pair) ->
+            GlyphIdentifier.fromLong(key) to pair.first
+        }
 
-        TODO()
+        glyphMap.clear()
+        allocator.clear()
+
+        return removedEntries
     }
 
     private fun updateNativeTexture(generationInfo: Companion.CharacterGenerationInfo, glyph: GlyphRenderInfo) {
+        val pixels = texture.pixels ?: run {
+            net.ccbluex.liquidbounce.utils.client.logger.warn("DynamicGlyphPage texture pixels are null, skipping update")
+            return
+        }
+
         copyImageSection(
             fromImage = this.image,
-            toImage = texture.pixels!!,
+            toImage = pixels,
             fromLocation = generationInfo.atlasLocation,
             toLocation = generationInfo.atlasLocation,
             patchSize = generationInfo.atlasDimension

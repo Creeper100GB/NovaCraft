@@ -114,9 +114,9 @@ abstract class ModelWrapper<I, O>(
             load(folder.toPath())
         } else {
             val lowercaseName = name.lowercase(Locale.ENGLISH)
-            javaClass.getResourceAsStream("/resources/liquidbounce/models/${lowercaseName}.params")!!.use { stream ->
-                load(stream)
-            }
+            val stream = javaClass.getResourceAsStream("/resources/liquidbounce/models/${lowercaseName}.params")
+                ?: throw IllegalStateException("Model resource not found: $lowercaseName")
+            stream.use { load(it) }
         }
     }
 

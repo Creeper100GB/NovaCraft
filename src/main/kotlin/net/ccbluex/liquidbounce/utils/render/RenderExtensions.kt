@@ -279,13 +279,16 @@ fun DynamicTexture.uploadRect(
     mipLevel: Int,
     x: Int, y: Int,
     width: Int, height: Int,
-) = this.texture.write(
-    source = this.pixels!!,
-    mipLevel, depthOrLayer = 0,
-    x, y,
-    width, height,
-    x, y,
-)
+) {
+    val pixels = this.pixels ?: return
+    this.texture.write(
+        source = pixels,
+        mipLevel, depthOrLayer = 0,
+        x, y,
+        width, height,
+        x, y,
+    )
+}
 
 fun NativeImage.toBufferedImage(): BufferedImage {
     val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)

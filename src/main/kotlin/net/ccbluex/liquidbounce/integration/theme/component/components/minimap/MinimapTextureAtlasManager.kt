@@ -73,11 +73,13 @@ class MinimapTextureAtlasManager {
     private var allocated = false
 
     init {
-        for (x in 0..15) {
-            for (y in 0..15) {
-                val color = if ((x and 1) xor (y and 1) == 0) Color4b.BLACK.argb else Color4b.WHITE.argb
-
-                this.texture.pixels!!.setPixel(x, y, color)
+        val pixels = this.texture.pixels
+        if (pixels != null) {
+            for (x in 0..15) {
+                for (y in 0..15) {
+                    val color = if ((x and 1) xor (y and 1) == 0) Color4b.BLACK.argb else Color4b.WHITE.argb
+                    pixels.setPixel(x, y, color)
+                }
             }
         }
 

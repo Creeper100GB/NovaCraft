@@ -157,7 +157,7 @@ class DynamicFontCacheManager(
     }
 
     private fun dontRetryAllocationOf(it: GlyphIdentifier) {
-        this.cacheData[it]!!.cacheState.set(BLOCKED)
+        this.cacheData[it]?.cacheState?.set(BLOCKED)
     }
 
     private fun freeSpace() {
@@ -169,13 +169,15 @@ class DynamicFontCacheManager(
             val renderInfo = this.dynamicGlyphPage.free(glyphId.codepoint, glyphId.style)
 
             if (renderInfo != null) {
-                this.glyphPageChanges.add(
-                    ChangeOnAtlas(
-                        GlyphDescriptor(this.dynamicGlyphPage, renderInfo),
-                        glyphId.style,
-                        removed = true
+                this.glyphPageLock.withLock {
+                    this.glyphPageChanges.add(
+                        ChangeOnAtlas(
+                            GlyphDescriptor(this.dynamicGlyphPage, renderInfo),
+                            glyphId.style,
+                            removed = true
+                        )
                     )
-                )
+                }
             } else {
                 logger.warn("Character '${glyphId.codepoint}' was freed twice.")
             }
@@ -192,18 +194,20 @@ class DynamicFontCacheManager(
 
         requests.forEach {
             if (it !in unsuccessful) {
-                this.cacheData[GlyphIdentifier(it)]!!.cacheState.set(CACHED)
+                this.cacheData[GlyphIdentifier(it)]?.cacheState?.set(CACHED)
 
-                val addedGlyph = this.dynamicGlyphPage.getGlyph(it.codepoint, it.font.style)!!
+                val addedGlyph = this.dynamicGlyphPage.getGlyph(it.codepoint, it.font.style)
 
-                this.glyphPageDirtyFlag.set(true)
-                this.glyphPageChanges.add(
-                    ChangeOnAtlas(
-                        GlyphDescriptor(this.dynamicGlyphPage, addedGlyph),
-                        it.font.style,
-                        removed = false
+                if (addedGlyph != null) {
+                    this.glyphPageDirtyFlag.set(true)
+                    this.glyphPageChanges.add(
+                        ChangeOnAtlas(
+                            GlyphDescriptor(this.dynamicGlyphPage, addedGlyph),
+                            it.font.style,
+                            removed = false
+                        )
                     )
-                )
+                }
             }
         }
 
