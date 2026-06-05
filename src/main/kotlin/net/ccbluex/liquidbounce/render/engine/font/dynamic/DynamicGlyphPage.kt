@@ -112,11 +112,13 @@ class DynamicGlyphPage(val atlasSize: Dimension = DEFAULT_ATLAS_SIZE, fontHeight
      */
     fun optimizeAtlas(): List<Pair<GlyphIdentifier, GlyphRenderInfo>> {
         val removedEntries = glyphMap.map { (key, pair) ->
-            GlyphIdentifier.fromLong(key) to pair.first
+            GlyphIdentifier(key) to pair.first
         }
 
+        glyphMap.forEach { (_, pair) ->
+            allocator.free(pair.second)
+        }
         glyphMap.clear()
-        allocator.clear()
 
         return removedEntries
     }
