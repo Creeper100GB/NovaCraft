@@ -20,7 +20,7 @@ package net.ccbluex.liquidbounce.features.cosmetic
 
 import com.mojang.authlib.GameProfile
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.api.core.ioScope
 import net.ccbluex.liquidbounce.api.models.cosmetics.Cosmetic
@@ -33,7 +33,10 @@ import net.ccbluex.liquidbounce.utils.client.clientLogger
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.render.registerTexture
 import net.minecraft.resources.Identifier
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
+import kotlin.coroutines.resume
 
 /**
  * A cape cosmetic manager
@@ -50,7 +53,7 @@ object CapeCosmeticsManager : EventListener {
      * We also don't need to worry about memory leaks
      * because the cache is cleared when the player disconnects from the world.
      */
-    private val cachedCapes = hashMapOf<String, Identifier>()
+    private val cachedCapes = ConcurrentHashMap<String, Identifier>()
 
     /**
      * Loads a player cape
@@ -62,42 +65,47 @@ object CapeCosmeticsManager : EventListener {
         ioScope.launch {
             val uuid = player.id
 
-            CosmeticService.fetchCosmetic(uuid, CosmeticCategory.CAPE) { cosmetic ->
-                // Get url of cape from cape service
-                val name = getCapeName(cosmetic) ?: return@fetchCosmetic
+            val cosmetic = fetchCosmeticSuspend(uuid, CosmeticCategory.CAPE) ?: return@launch
+            val name = getCapeName(cosmetic) ?: return@launch
 
-                // Check if the cape is cached
-                val cachedCapeId = cachedCapes[name]
-                if (cachedCapeId != null) {
-                    logger.info("Successfully loaded cached cape for ${player.name}")
-                    callback.accept(cachedCapeId)
-                    return@fetchCosmetic
-                }
+            // Check if the cape is cached
+            val cachedCapeId = cachedCapes[name]
+            if (cachedCapeId != null) {
+                logger.info("Successfully loaded cached cape for ${player.name}")
+                callback.accept(cachedCapeId)
+                return@launch
+            }
 
-                // Request cape texture
-                val nativeImage = runCatching {
-                    runBlocking {
-                        CapeApi.getCape(name)
-                    }
-                }.getOrNull() ?: return@fetchCosmetic
+            // Request cape texture
+            val nativeImage = try {
+                CapeApi.getCape(name)
+            } catch (_: Exception) {
+                return@launch
+            } ?: return@launch
 
-                logger.info("Successfully loaded cape for ${player.name}")
+            logger.info("Successfully loaded cape for ${player.name}")
 
-                val id = LiquidBounce.identifier("cape-$name")
+            val id = LiquidBounce.identifier("cape-$name")
 
-                mc.execute {
-                    // Register cape texture
-                    nativeImage.registerTexture(id)
+            mc.execute {
+                // Register cape texture
+                nativeImage.registerTexture(id)
 
-                    // Cache cape texture
-                    cachedCapes[name] = id
+                // Cache cape texture
+                cachedCapes[name] = id
 
-                    // Return cape texture
-                    callback.accept(id)
-                }
+                // Return cape texture
+                callback.accept(id)
             }
         }
     }
+
+    private suspend fun fetchCosmeticSuspend(uuid: UUID, category: CosmeticCategory): Cosmetic? =
+        suspendCancellableCoroutine { continuation ->
+            CosmeticService.fetchCosmetic(uuid, category) { cosmetic ->
+                continuation.resume(cosmetic)
+            }
+        }
 
     private fun getCapeName(cosmetic: Cosmetic): String? {
         // Check if cosmetic is a cape

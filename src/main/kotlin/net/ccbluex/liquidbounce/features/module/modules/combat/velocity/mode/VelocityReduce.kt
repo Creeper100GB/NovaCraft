@@ -293,8 +293,12 @@ object VelocityReduce : VelocityMode("Reduce") {
                 target = null
                 return@handler
             }
+            val attackTarget = target ?: run {
+                remainingAttackCount = 0
+                return@handler
+            }
             player.isSprinting = false
-            attackEntity(target!!, SwingMode.DO_NOT_HIDE)
+            attackEntity(attackTarget, SwingMode.DO_NOT_HIDE)
             forwardInputAttackGameTick = currentGameTick
             player.deltaMovement = player.deltaMovement.multiply(horizontal, vertical, horizontal)
             remainingAttackCount--

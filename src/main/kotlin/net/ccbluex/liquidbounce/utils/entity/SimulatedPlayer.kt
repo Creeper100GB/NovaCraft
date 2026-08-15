@@ -27,6 +27,7 @@ import net.ccbluex.liquidbounce.injection.mixins.minecraft.entity.MixinEntityFlu
 import net.ccbluex.liquidbounce.injection.mixins.minecraft.entity.MixinEntityFluidInteractionTrackerAccessor
 import net.ccbluex.liquidbounce.utils.block.getBlock
 import net.ccbluex.liquidbounce.utils.block.getState
+import net.ccbluex.liquidbounce.utils.block.stateOrEmpty
 import net.ccbluex.liquidbounce.utils.math.fastCos
 import net.ccbluex.liquidbounce.utils.math.fastSin
 import net.ccbluex.liquidbounce.utils.client.player
@@ -596,7 +597,7 @@ class SimulatedPlayer(
         val clampedX = Mth.clamp(motion.x, -0.15000000596046448, 0.15000000596046448)
         val clampedZ = Mth.clamp(motion.z, -0.15000000596046448, 0.15000000596046448)
         var clampedY = max(motion.y, -0.15000000596046448)
-        if (clampedY < 0.0 && !pos.toBlockPos().getState()!!
+        if (clampedY < 0.0 && !pos.toBlockPos().stateOrEmpty
                 .`is`(Blocks.SCAFFOLDING) && player.isSuppressingSlidingDownLadder
         ) {
             clampedY = 0.0
@@ -620,7 +621,7 @@ class SimulatedPlayer(
 
     private fun isClimbing(): Boolean {
         val blockPos = pos.toBlockPos()
-        val blockState = blockPos.getState()!!
+        val blockState = blockPos.stateOrEmpty
         return if (blockState.`is`(BlockTags.CLIMBABLE)) {
             true
         } else if (blockState.block is TrapDoorBlock && this.trapdoorUsableAsLadder(blockPos, blockState)) {

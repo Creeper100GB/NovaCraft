@@ -268,7 +268,7 @@ object ConfigSystem {
 
         val values = jsonObject.getAsJsonArray("value")
             .map { valueElement -> valueElement.asJsonObject }
-            .associateBy { valueObj -> valueObj["name"].asString!! }
+            .associateBy { valueObj -> valueObj["name"]?.asString ?: "unknown" }
 
         valueGroup.migrate(values)
 

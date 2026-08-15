@@ -39,7 +39,7 @@ import java.util.function.Supplier
 
 class ScriptModule(val script: PolyglotScript, moduleObject: Map<String, Any>) : ClientModule(
     name = moduleObject["name"] as String,
-    category = ModuleCategories.byName(moduleObject["category"] as String)!!
+    category = ModuleCategories.byName(moduleObject["category"] as String) ?: ModuleCategories.MISC
 ) {
 
     private val events = hashMapOf<String, org.graalvm.polyglot.Value>()

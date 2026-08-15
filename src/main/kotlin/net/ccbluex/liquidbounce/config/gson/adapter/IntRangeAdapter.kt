@@ -39,6 +39,7 @@ object IntRangeAdapter : JsonSerializer<IntRange>, JsonDeserializer<IntRange> {
         return obj
     }
 
+    @Suppress("ThrowsCount")
     override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): IntRange {
         if (json.isJsonPrimitive) {
             val primitive = json.asJsonPrimitive
@@ -54,7 +55,12 @@ object IntRangeAdapter : JsonSerializer<IntRange>, JsonDeserializer<IntRange> {
         }
 
         val obj = json.asJsonObject
-        return obj["from"].asInt..obj["to"].asInt
+        val from = obj["from"]
+        val to = obj["to"]
+        if (from == null || to == null) {
+            throw JsonParseException("Invalid int range, expected 'from' and 'to': $json")
+        }
+        return from.asInt..to.asInt
     }
 
 }

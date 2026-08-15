@@ -43,6 +43,7 @@ import net.ccbluex.liquidbounce.utils.block.SwingMode
 import net.ccbluex.liquidbounce.utils.block.getState
 import net.ccbluex.liquidbounce.utils.block.immutable
 import net.ccbluex.liquidbounce.utils.block.outlineBox
+import net.ccbluex.liquidbounce.utils.block.stateOrEmpty
 import net.ccbluex.liquidbounce.utils.client.Chronometer
 import net.ccbluex.liquidbounce.utils.inventory.HotbarItemSlot
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
@@ -350,7 +351,7 @@ object ModulePacketMine : ClientModule("PacketMine", ModuleCategories.WORLD) {
         }
 
         val blockPos = hitResult.blockPos
-        val state = blockPos.getState()!!
+        val state = blockPos.stateOrEmpty
         val activeTarget = _target
 
         val shouldTargetBlock = mode.activeMode.shouldTarget(blockPos, state)

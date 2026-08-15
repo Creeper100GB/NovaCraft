@@ -39,6 +39,7 @@ import net.ccbluex.liquidbounce.utils.block.doPlacement
 import net.ccbluex.liquidbounce.utils.block.getState
 import net.ccbluex.liquidbounce.utils.block.isBlockedByEntitiesReturnCrystal
 import net.ccbluex.liquidbounce.utils.block.isInteractable
+import net.ccbluex.liquidbounce.utils.block.stateOrEmpty
 import net.ccbluex.liquidbounce.utils.block.targetfinding.BlockOffsetOptions
 import net.ccbluex.liquidbounce.utils.block.targetfinding.BlockPlacementTarget
 import net.ccbluex.liquidbounce.utils.block.targetfinding.BlockPlacementTargetFindingOptions
@@ -292,7 +293,7 @@ class BlockPlacer(
 
     private fun isBlocked(posAsLong: Long): Boolean {
         val pos = blockPosCache.set(posAsLong)
-        if (!pos.getState()!!.canBeReplaced()) {
+        if (!pos.stateOrEmpty.canBeReplaced()) {
             inaccessible.add(posAsLong)
             return true
         }
@@ -336,7 +337,7 @@ class BlockPlacer(
 
         SilentHotbar.selectSlotSilently(this, slot, slotResetDelay.random())
 
-        if (slot.itemStack.item !is BlockItem || pos.getState()!!.canBeReplaced()) {
+        if (slot.itemStack.item !is BlockItem || pos.stateOrEmpty.canBeReplaced()) {
             blocks.remove(pos.asLong())
 
             // place the block
@@ -351,7 +352,7 @@ class BlockPlacer(
             range = max(range, wallRange).toDouble(),
             rotation = providedRotation,
             pos = pos,
-            state = pos.getState()!!
+            state = pos.stateOrEmpty
         )
 
         if (blockHitResult != null && blockHitResult.type == HitResult.Type.BLOCK && blockHitResult.blockPos == pos) {

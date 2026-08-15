@@ -146,7 +146,8 @@ data class InputBind(
     fun matchesKeyRelease(event: KeyboardKeyEvent): Boolean {
         if (event.action != GLFW.GLFW_RELEASE) return false
         val keyReleased = matchesKey(event.keyCode, event.scanCode)
-        val modifierReleased = event.key.toModifierOrNull().let { it in modifiers && !it!!.isAnyPressed }
+        val modifier = event.key.toModifierOrNull()
+        val modifierReleased = modifier != null && modifier in modifiers && !modifier.isAnyPressed
 
         return keyReleased || modifierReleased
     }
@@ -166,7 +167,8 @@ data class InputBind(
     fun matchesMouseRelease(event: MouseButtonEvent): Boolean {
         if (event.action != GLFW.GLFW_RELEASE) return false
         val buttonReleased = matchesMouse(event.button)
-        val modifierReleased = event.key.toModifierOrNull().let { it in modifiers && !it!!.isAnyPressed }
+        val modifier = event.key.toModifierOrNull()
+        val modifierReleased = modifier != null && modifier in modifiers && !modifier.isAnyPressed
 
         return buttonReleased || modifierReleased
     }

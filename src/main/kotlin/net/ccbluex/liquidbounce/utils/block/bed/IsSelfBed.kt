@@ -135,7 +135,10 @@ sealed class IsSelfBedMode(name: String, final override val parent: ModeValueGro
         override fun isSelfBed(
             block: BedBlock,
             pos: BlockPos,
-        ): Boolean = pos == trackedPos || pos.relative(pos.getState().anotherBedPartDirection()!!) == trackedPos
+        ): Boolean {
+            val otherPart = pos.getState()?.anotherBedPartDirection() ?: return pos == trackedPos
+            return pos == trackedPos || pos.relative(otherPart) == trackedPos
+        }
 
         @Suppress("unused")
         private val keyHandler = handler<KeyboardKeyEvent> { event ->

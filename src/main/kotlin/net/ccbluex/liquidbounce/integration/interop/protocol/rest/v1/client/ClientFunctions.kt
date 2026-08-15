@@ -144,7 +144,8 @@ private fun Routing.postFileDialog() = post("/fileDialog") {
 private val POSSIBLE_URL_TARGETS: Map<String, URI> = buildMap {
     val properties = Properties()
 
-    properties.load(LiquidBounce::class.java.getResourceAsStream("/resources/liquidbounce/client_urls.properties"))
+    val stream = LiquidBounce::class.java.getResourceAsStream("/resources/liquidbounce/client_urls.properties")
+    stream?.use { properties.load(it) }
 
     properties.forEach { (k, v) ->
         this[k as String] = URI(v as String)

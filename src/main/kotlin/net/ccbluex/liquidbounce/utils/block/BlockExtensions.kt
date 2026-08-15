@@ -247,7 +247,7 @@ inline fun Vec3.searchBlocksInRangeSorted(
 fun BlockPos.searchBedLayer(state: BlockState, layers: Int): Sequence<IntLongPair> {
     check(state.isBed) { "This function is only available for Beds" }
 
-    val anotherPartDirection = state.anotherBedPartDirection()!!
+    val anotherPartDirection = state.anotherBedPartDirection() ?: return emptySequence()
     val bedDirection = anotherPartDirection.opposite
 
     val left: Direction

@@ -22,7 +22,7 @@ import net.ccbluex.liquidbounce.event.tickHandler
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold.isBlockBelow
 import net.ccbluex.liquidbounce.utils.block.getCenterDistanceSquared
-import net.ccbluex.liquidbounce.utils.block.getState
+import net.ccbluex.liquidbounce.utils.block.stateOrEmpty
 import net.ccbluex.liquidbounce.utils.entity.airTicks
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.withStrafe
@@ -76,7 +76,7 @@ object ScaffoldTowerHypixel : ScaffoldTower("Hypixel") {
             }?.below() ?: blockPos
 
             // Check if block next to the player is solid
-            if (!blockOffset.getState()!!.isRedstoneConductor(world, blockOffset)) {
+            if (!blockOffset.stateOrEmpty.isRedstoneConductor(world, blockOffset)) {
                 return blockOffset
             }
         }

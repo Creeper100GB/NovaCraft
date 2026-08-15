@@ -47,6 +47,9 @@ object RangeAdapter : JsonSerializer<ClosedRange<*>>, JsonDeserializer<ClosedRan
 
         val first = obj["from"]
         val second = obj["to"]
+        if (first == null || second == null) {
+            throw JsonParseException("Invalid range, expected 'from' and 'to': $json")
+        }
 
         return when (typeOfT) {
             TYPE_FLOAT_RANGE -> first.asFloat..second.asFloat
