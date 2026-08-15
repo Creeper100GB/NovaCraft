@@ -25,7 +25,7 @@ import net.ccbluex.liquidbounce.event.events.PacketEvent
 import net.ccbluex.liquidbounce.event.events.PlayerMoveEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.tickHandler
-import net.ccbluex.liquidbounce.event.tickUntil
+import net.ccbluex.liquidbounce.event.tickUntilOrTimeout
 import net.ccbluex.liquidbounce.event.waitTicks
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly
 import net.ccbluex.liquidbounce.utils.client.Timer
@@ -48,6 +48,8 @@ object FlyHypixel : Mode("Hypixel") {
 
     private var isFlying = false
 
+    private const val MAX_WAIT_TICKS = 100
+
     override fun disable() {
         isFlying = false
         super.disable()
@@ -55,7 +57,7 @@ object FlyHypixel : Mode("Hypixel") {
 
     @Suppress("unused")
     private val tickHandler = tickHandler {
-        tickUntil { isFlying }
+        tickUntilOrTimeout({ isFlying }, MAX_WAIT_TICKS)
 
         player.deltaMovement.y = 0.8
         waitTicks(1)
@@ -70,7 +72,7 @@ object FlyHypixel : Mode("Hypixel") {
         waitTicks(19)
         player.deltaMovement.y += 0.42
 
-        tickUntil { player.onGround() }
+        tickUntilOrTimeout({ player.onGround() }, MAX_WAIT_TICKS)
         ModuleFly.enabled = false
     }
 

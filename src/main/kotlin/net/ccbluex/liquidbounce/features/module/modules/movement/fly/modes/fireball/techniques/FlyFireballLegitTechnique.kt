@@ -26,7 +26,7 @@ import net.ccbluex.liquidbounce.event.events.MovementInputEvent
 import net.ccbluex.liquidbounce.event.events.RotationUpdateEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.tickHandler
-import net.ccbluex.liquidbounce.event.tickUntil
+import net.ccbluex.liquidbounce.event.tickUntilOrTimeout
 import net.ccbluex.liquidbounce.event.waitTicks
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.modes.fireball.FlyFireball
@@ -38,6 +38,8 @@ import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
 import net.minecraft.util.Mth
 
 object FlyFireballLegitTechnique : Mode("Legit") {
+
+    private const val MAX_WAIT_TICKS = 100
 
     override val parent: ModeValueGroup<Mode>
         get() = FlyFireball.technique
@@ -95,7 +97,7 @@ object FlyFireballLegitTechnique : Mode("Legit") {
             if (Jump.enabled) {
                 if (player.onGround()) {
                     shouldJump = true
-                    tickUntil { !shouldJump }
+                    tickUntilOrTimeout({ !shouldJump }, MAX_WAIT_TICKS)
                 }
                 waitTicks(Jump.delay)
             }

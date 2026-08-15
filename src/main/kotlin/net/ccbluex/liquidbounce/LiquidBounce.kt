@@ -451,10 +451,15 @@ object LiquidBounce : EventListener {
             // Print client information
             logger.info("Client Version: $clientVersion ($clientCommit)")
             logger.info("Client Branch: $clientBranch")
-            logger.info("Operating System: ${System.getProperty("os.name")} (${System.getProperty("os.version")})")
-            logger.info("Java Version: ${System.getProperty("java.version")}")
-            logger.info("Screen Resolution: ${mc.window.screenWidth}x${mc.window.screenHeight}")
-            logger.info("Refresh Rate: ${mc.window.refreshRate} Hz")
+
+            // System details are intentionally omitted from the default log to reduce
+            // the amount of personally identifying machine information written to disk.
+            if (IN_DEVELOPMENT) {
+                logger.info("Operating System: ${System.getProperty("os.name")} (${System.getProperty("os.version")})")
+                logger.info("Java Version: ${System.getProperty("java.version")}")
+                logger.info("Screen Resolution: ${mc.window.screenWidth}x${mc.window.screenHeight}")
+                logger.info("Refresh Rate: ${mc.window.refreshRate} Hz")
+            }
 
             // Initialize event manager
             EventManager

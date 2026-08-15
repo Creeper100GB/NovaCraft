@@ -22,7 +22,7 @@ import net.ccbluex.liquidbounce.config.types.group.ToggleableValueGroup
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleDebug.debugParameter
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ScaffoldMovementPlanner
-import net.ccbluex.liquidbounce.utils.entity.isCloseToEdge
+import net.ccbluex.liquidbounce.utils.entity.isCloseToEdgeCached
 import net.ccbluex.liquidbounce.utils.math.average
 import net.ccbluex.liquidbounce.utils.math.copy
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
@@ -99,7 +99,7 @@ object ScaffoldMovementPrediction : ToggleableValueGroup(ModuleScaffold, "Predic
         }
 
         // When we are close to the edge, we are able to place right now. Thus, we don't want to use a future position
-        if (player.isCloseToEdge(distance = predictionCutoffDistance.toDouble())) {
+        if (player.isCloseToEdgeCached(distance = predictionCutoffDistance.toDouble())) {
             return null
         }
 

@@ -112,6 +112,23 @@ suspend fun tickUntil(
     CoroutineTicker.register(TickUntilCallback(continuation, stopAt))
 }
 
+/**
+ * Like [tickUntil] but stops after [maxTicks] with a safety timeout.
+ * Returns `maxTicks` when the timeout is reached, so callers can distinguish
+ * a timeout from a regular completion.
+ *
+ * @param stopAt the callback of elapsed ticks. Will be called on game tick.
+ * @param maxTicks the maximum number of ticks to wait before giving up.
+ * @return the elapsed ticks, capped at [maxTicks].
+ */
+suspend fun tickUntilOrTimeout(
+    stopAt: IntPredicate,
+    maxTicks: Int,
+): Int {
+    val elapsed = tickUntil { stopAt.test(it) || it >= maxTicks }
+    return elapsed.coerceAtMost(maxTicks)
+}
+
 private class TickUntilCallback(
     private val continuation: CancellableContinuation<Int>,
     private val stopAt: IntPredicate,

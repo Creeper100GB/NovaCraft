@@ -162,7 +162,7 @@ class SimulatedPlayerCache(internal val simulatedPlayer: SimulatedPlayer) {
         simulateUntil(tickRange.last + 1)
 
         return lock.read {
-            ArrayList(simulationSteps.subList(tickRange.first, tickRange.last + 1))
+            simulationSteps.subList(tickRange.first, tickRange.last + 1).toList()
         }
     }
 

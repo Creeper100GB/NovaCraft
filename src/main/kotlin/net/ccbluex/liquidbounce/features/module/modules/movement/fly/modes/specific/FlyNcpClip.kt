@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.event.events.PacketEvent
 import net.ccbluex.liquidbounce.event.events.TransferOrigin
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.tickHandler
-import net.ccbluex.liquidbounce.event.tickUntil
+import net.ccbluex.liquidbounce.event.tickUntilOrTimeout
 import net.ccbluex.liquidbounce.features.blink.BlinkManager
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly
 import net.ccbluex.liquidbounce.utils.client.Timer
@@ -72,20 +72,22 @@ object FlyNcpClip : Mode("NcpClip") {
 
     private var shouldLag = false
 
+    private const val MAX_WAIT_TICKS = 100
+
     @Suppress("unused")
     val tickHandler = tickHandler {
         val startPos = startPosition
 
         // If fall damage is required, wait for damage
         if (fallDamage) {
-            tickUntil { damage }
+            tickUntilOrTimeout({ damage }, MAX_WAIT_TICKS)
         }
 
         if (startPos == null) {
             startPosition = player.position()
 
             // Wait until there is a vertical collision
-            tickUntil { collidesVertical() }
+            tickUntilOrTimeout({ collidesVertical() }, MAX_WAIT_TICKS)
 
             if (clipping != 0f) {
                 network.send(
@@ -107,14 +109,14 @@ object FlyNcpClip : Mode("NcpClip") {
             }
 
             // Wait until there is no vertical collision
-            tickUntil { !collidesVertical() }
+            tickUntilOrTimeout({ !collidesVertical() }, MAX_WAIT_TICKS)
 
             // Proceed to jump (just like speeding up) and boost strafe entry
             player.jumpFromGround()
             player.deltaMovement = player.deltaMovement.withStrafe(speed = (speed + additionalEntrySpeed).toDouble())
 
             // Wait until the player is in air
-            tickUntil { !player.onGround() }
+            tickUntilOrTimeout({ !player.onGround() }, MAX_WAIT_TICKS)
 
             // Proceed to strafe with the normal speed
             player.deltaMovement = player.deltaMovement.withStrafe(speed = speed.toDouble())

@@ -25,7 +25,7 @@ import net.ccbluex.liquidbounce.event.events.PacketEvent
 import net.ccbluex.liquidbounce.event.events.PlayerMoveEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.tickHandler
-import net.ccbluex.liquidbounce.event.tickUntil
+import net.ccbluex.liquidbounce.event.tickUntilOrTimeout
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly.modes
 import net.ccbluex.liquidbounce.utils.math.copy
@@ -42,6 +42,8 @@ import net.minecraft.world.phys.Vec3
  * @author Nullable
  */
 internal object FlyVulcan286Teleport : Mode("Vulcan286-Teleport-18") {
+
+    private const val MAX_WAIT_TICKS = 100
 
     override val parent: ModeValueGroup<*>
         get() = modes
@@ -72,12 +74,12 @@ internal object FlyVulcan286Teleport : Mode("Vulcan286-Teleport-18") {
             player.jumpFromGround()
             // Ugly code, yes I know
             // If this wasn't like this, it would trigger at the same tick...
-            tickUntil { !player.onGround() }
-            tickUntil { player.onGround() }
+            tickUntilOrTimeout({ !player.onGround() }, MAX_WAIT_TICKS)
+            tickUntilOrTimeout({ player.onGround() }, MAX_WAIT_TICKS)
         }
 
         jumping = false
-        tickUntil { player.hurtTime > 0 }
+        tickUntilOrTimeout({ player.hurtTime > 0 }, MAX_WAIT_TICKS)
 
         // Flag to disable more checks...
         network.send(
@@ -89,7 +91,7 @@ internal object FlyVulcan286Teleport : Mode("Vulcan286-Teleport-18") {
             player.horizontalCollision
         ))
 
-        tickUntil { flagged }
+        tickUntilOrTimeout({ flagged }, MAX_WAIT_TICKS)
 
         // Cool, we took damage so lets fly
         val vector = Vec3.directionFromRotation(0F, player.yRot).normalize()

@@ -18,7 +18,7 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.movement
 
-import net.ccbluex.liquidbounce.event.events.PacketEvent
+import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.tickHandler
 import net.ccbluex.liquidbounce.features.module.ClientModule
@@ -26,7 +26,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategories
 import net.ccbluex.liquidbounce.utils.client.chat
 import net.ccbluex.liquidbounce.utils.client.markAsError
 import net.ccbluex.liquidbounce.utils.entity.withStrafe
-import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
+import net.ccbluex.liquidbounce.utils.movement.SetbackTracker
 
 /**
  * NoClip module
@@ -79,9 +79,10 @@ object ModuleNoClip : ClientModule("NoClip", ModuleCategories.MOVEMENT) {
         }
     }
 
-    val packetHandler = handler<PacketEvent> { event ->
+    @Suppress("unused")
+    private val setbackHandler = handler<GameTickEvent> {
         // Setback detection
-        if (event.packet is ClientboundPlayerPositionPacket && disableOnSetback && !paused()) {
+        if (disableOnSetback && !paused() && SetbackTracker.consumeSetbackForTick()) {
             chat(markAsError(this.message("setbackDetected")))
             enabled = false
         }

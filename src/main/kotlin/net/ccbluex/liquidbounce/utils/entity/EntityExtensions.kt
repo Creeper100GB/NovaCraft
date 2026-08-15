@@ -304,19 +304,22 @@ private val closeToEdgeCache = CloseToEdgeCache()
 
 private data class CloseToEdgeCache(
     var tick: Int = -1,
+    var distance: Double = -1.0,
     var result: Boolean = false,
 )
 
 /**
  * Cached edge check for the current tick. Avoids re-creating a full [SimulatedPlayer]
- * for every caller in the same tick.
+ * for every caller in the same tick. The cache is keyed by game tick and distance,
+ * so callers using the default input/position share a single simulation per tick.
  */
 fun LocalPlayer.isCloseToEdgeCached(distance: Double = 0.1): Boolean {
     val cache = closeToEdgeCache
     val currentTick = player.tickCount
 
-    if (cache.tick != currentTick) {
+    if (cache.tick != currentTick || cache.distance != distance) {
         cache.tick = currentTick
+        cache.distance = distance
         cache.result = this.isCloseToEdge(distance = distance)
     }
 

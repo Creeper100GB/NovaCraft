@@ -88,7 +88,7 @@ object HttpClient {
     @JvmField
     val DEFAULT_AGENT = "${LiquidBounce.CLIENT_NAME}/${LiquidBounce.clientVersion}" +
         " (${LiquidBounce.clientCommit}, ${LiquidBounce.clientBranch}, " +
-        "${if (LiquidBounce.IN_DEVELOPMENT) "dev" else "release"}, ${System.getProperty("os.name")})"
+        "${if (LiquidBounce.IN_DEVELOPMENT) "dev" else "release"})"
 
     /**
      * Unfortunately, Lunar Client uses OkHttp 4.12.0 which does not have [Headers.EMPTY]

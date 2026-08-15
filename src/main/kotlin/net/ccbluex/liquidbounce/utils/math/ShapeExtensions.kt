@@ -226,9 +226,10 @@ fun <K> Collection<PositionedVoxelShape<K>>.mergeAdjacentVoxelShapes(): List<Pos
         return emptyList()
     }
 
-    val visited = LongOpenHashSet()
-    val queue = LongArrayList()
-    val componentEntries = LongArrayList()
+    val scratch = ScratchCollectionPool.get
+    val visited = scratch.visited
+    val queue = scratch.queue
+    val componentEntries = scratch.componentEntries
 
     val result = ArrayList<PositionedVoxelShape<K>>()
     for ((key, shapesByPos) in groupedShapes) {
@@ -719,3 +720,22 @@ private fun DoubleArray.indexOfCoordinate(value: Double): Int {
 }
 
 private fun approximatelyEquals(a: Double, b: Double): Boolean = kotlin.math.abs(a - b) <= SHAPE_EPSILON
+
+private class ScratchCollections(
+    val visited: LongOpenHashSet,
+    val queue: LongArrayList,
+    val componentEntries: LongArrayList,
+)
+
+private object ScratchCollectionPool {
+    private val local = ThreadLocal.withInitial {
+        ScratchCollections(
+            LongOpenHashSet(),
+            LongArrayList(),
+            LongArrayList(),
+        )
+    }
+
+    val get: ScratchCollections
+        get() = local.get()
+}
