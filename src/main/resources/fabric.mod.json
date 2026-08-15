@@ -1,18 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "liquidbounce",
+  "id": "novacraft",
   "version": "${version}",
-  "name": "LiquidBounce",
-  "description": "A free mixin-based injection hacked-client for Minecraft using the Fabric modding toolchain.",
+  "name": "NovaCraft",
+  "description": "A free mixin-based injection client for Minecraft using the Fabric modding toolchain.",
   "authors": [
-    "CCBlueX"
+    "Creeper100GB"
   ],
   "contributors": $contributors,
   "contact": {
-    "homepage": "https://liquidbounce.net/",
-    "sources": "https://github.com/CCBlueX/LiquidBounce/",
-    "issues": "https://github.com/CCBlueX/LiquidBounce/issues",
-    "email": "support@liquidbounce.net"
+    "homepage": "https://github.com/Creeper100GB/NovaCraft/",
+    "sources": "https://github.com/Creeper100GB/NovaCraft/",
+    "issues": "https://github.com/Creeper100GB/NovaCraft/issues"
   },
   "license": "GNU General Public License v3.0",
   "icon": "resources/liquidbounce/icon_64x64.png",
@@ -22,9 +21,7 @@
   },
   "custom": {
     "modmenu": {
-      "links": {
-        "liquidbounce.generic.forum": "https://forums.ccbluex.net/"
-      }
+      "links": {}
     }
   },
   "mixins": [

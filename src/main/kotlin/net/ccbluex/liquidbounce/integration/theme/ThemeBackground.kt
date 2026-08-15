@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.ccbluex.liquidbounce.integration.theme
 
@@ -141,7 +141,10 @@ sealed interface ThemeBackground : Closeable {
 
             resizeIfNeeded(framebufferWidth, framebufferHeight)
 
-            backgroundView!!.createRenderPass(
+            val view = backgroundView ?: return false
+            val setup = textureSetup ?: return false
+
+            view.createRenderPass(
                 { "ThemeShaderBackground Pass - ${metadata.name}" }
             ).use { pass ->
                 pass.setPipeline(pipeline)
@@ -150,7 +153,7 @@ sealed interface ThemeBackground : Closeable {
             }
 
             context.drawBlitOnCurrentLayer(
-                textureSetup!!,
+                setup,
                 x0 = 0, y0 = 0,
                 x1 = width, y1 = height,
                 u1 = 0f, v1 = 1f,
@@ -180,19 +183,21 @@ sealed interface ThemeBackground : Closeable {
             framebufferWidth: Int,
             framebufferHeight: Int,
         ) {
-            if (background == null ||
-                background!!.getWidth(0) != framebufferWidth ||
-                background!!.getHeight(0) != framebufferHeight
+            val currentBackground = background
+            if (currentBackground == null ||
+                currentBackground.getWidth(0) != framebufferWidth ||
+                currentBackground.getHeight(0) != framebufferHeight
             ) {
-                background?.close()
-                background = gpuDevice.createTexture(
+                currentBackground?.close()
+                val newBackground = gpuDevice.createTexture(
                     "ThemeBackground/Shader - ${metadata.name} ($framebufferWidth x $framebufferHeight)",
                     GpuTexture.USAGE_RENDER_ATTACHMENT,
                     TextureFormat.RGBA8, framebufferWidth, framebufferHeight,
                     1, 1,
                 )
+                background = newBackground
                 backgroundView?.close()
-                backgroundView = background!!.asView()
+                backgroundView = newBackground.asView()
                 textureSetup = backgroundView!!.asTextureSetup(SAMPLER)
             }
         }

@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,13 +14,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 
 /*
  * LiquidBounce Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/CCBlueX/LiquidBounce/
+ * https://github.com/Creeper100GB/NovaCraft/
  */
 package net.ccbluex.liquidbounce.lang
 
@@ -89,7 +89,8 @@ object LanguageManager : ValueGroup("Language") {
                     val languageFile = javaClass.getResourceAsStream(
                         "/resources/liquidbounce/lang/${choice.code}.json"
                     )
-                    val translations = languageFile!!.readJson<HashMap<String, String>>()
+                    val translations = languageFile?.use { it.readJson<HashMap<String, String>>() }
+                        ?: throw IllegalStateException("Language file not found: ${choice.code}")
 
                     ClientLanguage(translations)
                 }

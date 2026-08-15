@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 @file:Suppress("NOTHING_TO_INLINE")
 
@@ -67,7 +67,7 @@ class ErrorHandler private constructor(
                 logger.error("An error occurred!", error)
 
                 if (buildAndShowMessage()) {
-                    browseUrl("https://github.com/CCBlueX/LiquidBounce/issues/new?template=bug_report.yml")
+                    browseUrl("https://github.com/Creeper100GB/NovaCraft/issues/new?template=bug_report.yml")
                 }
 
                 exitProcess(1)
@@ -90,8 +90,10 @@ class ErrorHandler private constructor(
         appendLine(2)
 
         val messages = quickFix.messages
-            .map {
-                it.key to (it.value!!.showStepIndex to it.value!!.steps(error))
+            .mapNotNull { entry ->
+                val fix = entry.value ?: return@mapNotNull null
+                val steps = fix.steps(error) ?: return@mapNotNull null
+                entry.key to (fix.showStepIndex to steps)
             }.filter {
                 it.second.second?.isEmpty() == false
             }

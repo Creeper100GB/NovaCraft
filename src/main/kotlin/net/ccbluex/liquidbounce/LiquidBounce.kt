@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.ccbluex.liquidbounce
 
@@ -96,21 +96,16 @@ import java.util.concurrent.Executor
 import kotlin.time.measureTime
 
 /**
- * LiquidBounce
+ * NovaCraft
  *
- * A free mixin-based injection hacked-client for Minecraft using FabricMC.
+ * A free mixin-based injection client for Minecraft using FabricMC.
  *
- * @author kawaiinekololis (@team CCBlueX)
+ * @author Creeper100GB
  */
 object LiquidBounce : EventListener {
 
-    /**
-     * CLIENT INFORMATION
-     *
-     * WARNING: Please read the GNU General Public License
-     */
-    const val CLIENT_NAME = "LiquidBounce"
-    const val CLIENT_AUTHOR = "CCBlueX"
+    const val CLIENT_NAME = "NovaCraft"
+    const val CLIENT_AUTHOR = "Creeper100GB"
 
     private object Client : Config("Client") {
         val version = text("Version", GitInfo.version())
@@ -219,7 +214,7 @@ object LiquidBounce : EventListener {
         if (HAS_AMD_VEGA_APU) {
             logger.info("AMD Vega iGPU detected, enabling different line smooth handling. " +
                 "If you believe this is a mistake, please create an issue at " +
-                "https://github.com/CCBlueX/LiquidBounce/issues.")
+                "https://github.com/Creeper100GB/NovaCraft/issues.")
         }
 
         // Do backup before loading configs

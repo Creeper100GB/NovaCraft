@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package net.ccbluex.liquidbounce.features.module.modules.misc
@@ -191,7 +191,7 @@ object ModuleBookBot : ClientModule("BookBot", ModuleCategories.EXPLOIT, disable
 
         /**
          * @source <a href="https://github.com/MeteorDevelopment/meteor-client/blob/2025789457e5b4c0671f04f0d3c7e0d91a31765c/src/main/java/meteordevelopment/meteorclient/systems/modules/misc/BookBot.java#L252-L326">code section</a>
-         * @contributor sqlerrorthing (<a href="https://github.com/CCBlueX/LiquidBounce/pull/5076">pull request</a>)
+         * @contributor sqlerrorthing (<a href="https://github.com/Creeper100GB/NovaCraft/pull/5076">pull request</a>)
          * @author arlomcwalter (on Meteor Client)
          */
         @Suppress("detekt:CognitiveComplexMethod")
@@ -293,7 +293,7 @@ internal sealed class GenerationMode(
         @Suppress("MaxLineLength")
         /**
          * @source <a href="https://github.com/MeteorDevelopment/meteor-client/blob/2025789457e5b4c0671f04f0d3c7e0d91a31765c/src/main/java/meteordevelopment/meteorclient/systems/modules/misc/BookBot.java#L201-L209">code section</a>
-         * @contributor sqlerrorthing (<a href="https://github.com/CCBlueX/LiquidBounce/pull/5076">pull request</a>)
+         * @contributor sqlerrorthing (<a href="https://github.com/Creeper100GB/NovaCraft/pull/5076">pull request</a>)
          * @author arlomcwalter (on Meteor Client)
          */
         override fun generate(): IntStream {

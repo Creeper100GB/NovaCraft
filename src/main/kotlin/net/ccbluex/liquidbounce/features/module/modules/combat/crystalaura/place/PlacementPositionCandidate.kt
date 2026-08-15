@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat.crystalaura.place
 
@@ -74,23 +74,24 @@ class PlacementPositionCandidate(
     fun isNotInvalid() = enemyDamage != null
 
     override fun compareTo(other: PlacementPositionCandidate): Int {
-        // coarse sorting
-        val enemyDamageComparison = this.enemyDamage!!.compareTo(other.enemyDamage!!)
+        val thisEnemyDamage = this.enemyDamage ?: return -1
+        val otherEnemyDamage = other.enemyDamage ?: return 1
 
-        // not equal
+        val enemyDamageComparison = thisEnemyDamage.compareTo(otherEnemyDamage)
+
         if (enemyDamageComparison != 0) {
             return enemyDamageComparison
         }
 
-        // equal -> fine sorting 1
-        val selfDamageComparison = other.selfDamage!!.compareTo(this.selfDamage!!)
+        val thisSelfDamage = this.selfDamage ?: return -1
+        val otherSelfDamage = other.selfDamage ?: return 1
 
-        // not equal
+        val selfDamageComparison = otherSelfDamage.compareTo(thisSelfDamage)
+
         if (selfDamageComparison != 0) {
             return selfDamageComparison
         }
 
-        // equal -> fine sorting 2
         return other.distanceSq.compareTo(this.distanceSq)
     }
 

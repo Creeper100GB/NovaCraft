@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.ccbluex.liquidbounce.features.module.modules.world.packetmine.tool
 
@@ -99,8 +99,9 @@ private fun getDestroySpeed(player: Player, state: BlockState, stack: ItemStack)
         speed *= 1f + (MobEffectUtil.getDigSpeedAmplification(player) + 1).toFloat() * 0.2f
     }
 
-    if (player.hasEffect(MobEffects.MINING_FATIGUE)) {
-        val miningFatigueMultiplier = when (player.getEffect(MobEffects.MINING_FATIGUE)!!.amplifier) {
+    val miningFatigue = player.getEffect(MobEffects.MINING_FATIGUE)
+    if (miningFatigue != null) {
+        val miningFatigueMultiplier = when (miningFatigue.amplifier) {
             0 -> 0.3f
             1 -> 0.09f
             2 -> 0.0027f
@@ -111,8 +112,9 @@ private fun getDestroySpeed(player: Player, state: BlockState, stack: ItemStack)
     }
 
     speed *= player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED).toFloat()
-    if (player.isEyeInFluid(FluidTags.WATER)) {
-        speed *= player.getAttribute(Attributes.SUBMERGED_MINING_SPEED)!!.value.toFloat()
+    val submergedSpeed = player.getAttribute(Attributes.SUBMERGED_MINING_SPEED)
+    if (player.isEyeInFluid(FluidTags.WATER) && submergedSpeed != null) {
+        speed *= submergedSpeed.value.toFloat()
     }
 
     if (!player.onGround()) {

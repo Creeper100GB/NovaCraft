@@ -1,9 +1,9 @@
-/*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+﻿/*
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.ccbluex.liquidbounce.render.engine
 
@@ -78,7 +78,8 @@ object BlurEffectRenderer : MinecraftShortcuts, EventListener {
             lastAlphaBlendRange = alphaBlendRange
         }
 
-        val overlayTexture = overlayRenderTargetHolder.raw!!.colorTextureView
+        val raw = overlayRenderTargetHolder.raw ?: return
+        val overlayTexture = raw.colorTextureView
         mc.mainRenderTarget
             .createRenderPass({ "GUI blur pass" })
             .use { pass ->
@@ -90,7 +91,7 @@ object BlurEffectRenderer : MinecraftShortcuts, EventListener {
                 pass.draw(0, 3)
             }
 
-        mc.mainRenderTarget.colorTextureView!!
+        mc.mainRenderTarget.colorTextureView
             .createRenderPass({ "GUI blur overlay blit pass" })
             .use { pass ->
                 // Blit overlay texture
