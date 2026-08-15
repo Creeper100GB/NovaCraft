@@ -75,8 +75,10 @@ object CoroutineTicker {
             return
         }
 
-        runningList.addAll(pendingList)
-        pendingList.clear()
+        if (pendingList.isNotEmpty()) {
+            runningList.addAll(pendingList)
+            pendingList.clear()
+        }
         runningList.removeIf(Predicate {
             try {
                 it.asBoolean

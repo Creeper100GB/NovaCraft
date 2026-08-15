@@ -47,6 +47,8 @@ import kotlin.math.max
  */
 object ModuleNewChunks : ClientModule("NewChunks", ModuleCategories.RENDER) {
 
+    private const val MAX_CHUNKS = 20000
+
     private val renderDistance by int("RenderDistance", 32, 4..128, "chunks")
     private val renderY by float("RenderY", 0.0f, -64.0f..320.0f)
     private val autoY by boolean("AutoY", false)
@@ -61,6 +63,30 @@ object ModuleNewChunks : ClientModule("NewChunks", ModuleCategories.RENDER) {
 
     private fun reset() {
         chunks.clear()
+    }
+
+    private fun pruneIfNecessary() {
+        if (chunks.size <= MAX_CHUNKS) {
+            return
+        }
+
+        // Remove all non-new chunks first
+        chunks.entries.removeIf { !it.value }
+
+        if (chunks.size > MAX_CHUNKS) {
+            // Still over the limit, keep the nearest new chunks only
+            val px = player.x
+            val pz = player.z
+            chunks.entries
+                .asSequence()
+                .sortedBy { (pos, _) ->
+                    val dx = pos.minBlockX - px
+                    val dz = pos.minBlockZ - pz
+                    dx * dx + dz * dz
+                }
+                .take(chunks.size - MAX_CHUNKS)
+                .forEach { (pos, _) -> chunks.remove(pos) }
+        }
     }
 
     override fun onDisabled() = reset()
@@ -83,6 +109,7 @@ object ModuleNewChunks : ClientModule("NewChunks", ModuleCategories.RENDER) {
                 val pos = ChunkPos(packet.x, packet.z)
 
                 chunks.putIfAbsent(pos, false)
+                pruneIfNecessary()
             }
 
             is ClientboundSectionBlocksUpdatePacket -> {
@@ -92,6 +119,7 @@ object ModuleNewChunks : ClientModule("NewChunks", ModuleCategories.RENDER) {
                         chunks[containing(bp)] = true
                     }
                 }
+                pruneIfNecessary()
             }
 
             is ClientboundBlockUpdatePacket -> {
@@ -99,6 +127,7 @@ object ModuleNewChunks : ClientModule("NewChunks", ModuleCategories.RENDER) {
                 if (!fluid.isEmpty && !fluid.isSource) {
                     chunks[containing(packet.pos)] = true
                 }
+                pruneIfNecessary()
             }
         }
     }

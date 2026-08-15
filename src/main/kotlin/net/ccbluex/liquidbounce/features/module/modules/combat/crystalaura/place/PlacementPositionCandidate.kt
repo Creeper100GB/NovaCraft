@@ -73,6 +73,7 @@ class PlacementPositionCandidate(
 
     fun isNotInvalid() = enemyDamage != null
 
+    @Suppress("ReturnCount")
     override fun compareTo(other: PlacementPositionCandidate): Int {
         val thisEnemyDamage = this.enemyDamage ?: return -1
         val otherEnemyDamage = other.enemyDamage ?: return 1

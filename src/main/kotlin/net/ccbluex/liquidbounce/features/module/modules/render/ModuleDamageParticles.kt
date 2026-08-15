@@ -25,6 +25,7 @@ import net.ccbluex.liquidbounce.event.events.EntityHealthUpdateEvent
 import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.events.OverlayRenderEvent
 import net.ccbluex.liquidbounce.event.events.WorldChangeEvent
+import net.ccbluex.liquidbounce.event.events.WorldEntityRemoveEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.ClientModule
 import net.ccbluex.liquidbounce.features.module.ModuleCategories
@@ -108,6 +109,11 @@ object ModuleDamageParticles : ClientModule("DamageParticles", ModuleCategories.
     private val worldChangeHandler = handler<WorldChangeEvent> {
         particles.clear()
         entityHealthMap.clear()
+    }
+
+    @Suppress("unused")
+    private val entityRemoveHandler = handler<WorldEntityRemoveEvent> { event ->
+        entityHealthMap.remove(event.entity)
     }
 
     @Suppress("unused")

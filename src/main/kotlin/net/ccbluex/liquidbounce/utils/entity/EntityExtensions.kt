@@ -300,6 +300,29 @@ fun LocalPlayer.isCloseToEdge(
     return wouldBeCloseToFallOff(pos) || wouldBeCloseToFallOff(playerPosInTwoTicks)
 }
 
+private val closeToEdgeCache = CloseToEdgeCache()
+
+private data class CloseToEdgeCache(
+    var tick: Int = -1,
+    var result: Boolean = false,
+)
+
+/**
+ * Cached edge check for the current tick. Avoids re-creating a full [SimulatedPlayer]
+ * for every caller in the same tick.
+ */
+fun LocalPlayer.isCloseToEdgeCached(distance: Double = 0.1): Boolean {
+    val cache = closeToEdgeCache
+    val currentTick = player.tickCount
+
+    if (cache.tick != currentTick) {
+        cache.tick = currentTick
+        cache.result = this.isCloseToEdge(distance = distance)
+    }
+
+    return cache.result
+}
+
 /**
  * Check if the player can step up by [height] blocks.
  *

@@ -92,6 +92,10 @@ object ModuleKillAura : ClientModule("KillAura", ModuleCategories.COMBAT) {
     private val rotations = tree(KillAuraRotationsValueGroup)
     private val pointTracker = tree(PointTracker(this))
 
+    override fun migrate(values: Map<String, JsonObject>) {
+        range.migrateFromValues(values)
+    }
+
     private val requires by multiEnumChoice<KillAuraRequirements>("Requires")
 
     private val requirementsMet

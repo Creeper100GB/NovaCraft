@@ -65,7 +65,8 @@ class NotebotPlayStageHandler(
         notes.forEach { note ->
             val instrumentNote = ModuleNotebot.getPlayedNote(note)
 
-            val blockToPlayWith = this.availableBlocksForNote[instrumentNote]?.firstOrNull { it !in usedBlocks } ?: return@forEach
+            val blockToPlayWith = this.availableBlocksForNote[instrumentNote]
+                ?.firstOrNull { it !in usedBlocks } ?: return@forEach
 
             if (blockToPlayWith != null) {
                 blockToPlayWith.click()

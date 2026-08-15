@@ -163,6 +163,7 @@ object VelocityReduce : VelocityMode("Reduce") {
         releaseReason = null
     }
 
+    @Suppress("CognitiveComplexMethod")
     private fun findTarget() {
         if (!canLag && lagTicks >= 0) return
 

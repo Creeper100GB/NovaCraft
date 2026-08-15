@@ -147,6 +147,10 @@ object ModuleBreadcrumbs : ClientModule("Breadcrumbs", ModuleCategories.RENDER, 
 
     private class Trail {
 
+        private companion object {
+            const val MAX_POSITIONS = 500
+        }
+
         val positions = ArrayDeque<TrailPart>()
 
         fun verifyAndRenderTrail(renderData: RenderData, cameraPos: Vec3, entity: Entity, time: Long) {
@@ -161,6 +165,11 @@ object ModuleBreadcrumbs : ClientModule("Breadcrumbs", ModuleCategories.RENDER, 
                 while (positions.isNotEmpty() && positions.peekFirst().creationTime < expirationTime) {
                     positions.removeFirst()
                 }
+            }
+
+            // Hard cap to prevent unbounded growth when temporary trails are disabled
+            while (positions.size > MAX_POSITIONS) {
+                positions.removeFirst()
             }
 
             if (positions.isEmpty()) {

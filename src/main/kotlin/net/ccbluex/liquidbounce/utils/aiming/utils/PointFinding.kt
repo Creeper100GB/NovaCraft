@@ -112,9 +112,10 @@ inline fun projectPointsOnBox(
     val plane = NormalizedPlane(targetFrameOrigin, playerToBoxLine.direction)
     val (toMatrix, backMatrix) = getRotationMatricesForVec(plane.normalVec)
 
-    val projectedAndRotatedPoints = targetVertices.mapToArray {
-        val intersection = plane.intersection(Line.fromPoints(virtualEye, it)) ?: return@mapToArray null
-        intersection.subtract(targetFrameOrigin).toVector3f().mul(backMatrix)
+    val projectedAndRotatedPoints = ArrayList<Vector3f>(targetVertices.size)
+    for (vertex in targetVertices) {
+        val intersection = plane.intersection(Line.fromPoints(virtualEye, vertex)) ?: continue
+        projectedAndRotatedPoints.add(intersection.subtract(targetFrameOrigin).toVector3f().mul(backMatrix))
     }
 
     var minZ = 0.0F

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
-@file:Suppress("All")
+@file:Suppress("TooManyFunctions", "LongMethod", "CognitiveComplexMethod", "LongParameterList", "NestedBlockDepth", "LargeClass", "MaxLineLength")
 
 package net.ccbluex.liquidbounce.utils.entity
 
@@ -95,6 +95,10 @@ class SimulatedPlayer(
     private val level: Level get() = player.level()
 
     companion object {
+
+        @JvmStatic
+        private val EMPTY_VOXEL_SHAPE_LIST: List<VoxelShape> = emptyList()
+
         private fun EntityFluidInteraction.deepCopy(): EntityFluidInteraction {
             val sourceTrackers = (this as MixinEntityFluidInteractionAccessor).trackerByFluid()
             val copy = EntityFluidInteraction(sourceTrackers.keys)
@@ -492,7 +496,7 @@ class SimulatedPlayer(
         val onGroundOrFalling: Boolean
         val collisionBox: AABB = AABB(-0.3, 0.0, -0.3, 0.3, 1.8, 0.3).move(this.pos)
 
-        val entityCollisionList = emptyList<VoxelShape>()
+        val entityCollisionList = EMPTY_VOXEL_SHAPE_LIST
 
         val adjustedMovement = if (movement.lengthSqr() == 0.0) {
             movement
@@ -683,7 +687,9 @@ class SimulatedPlayer(
                 )
             ) {
                 xMovement =
-                    if (xMovement < step && xMovement >= -step) 0.0 else if (xMovement > 0.0) {
+                    if (xMovement < step && xMovement >= -step) {
+                        0.0
+                    } else if (xMovement > 0.0) {
                         xMovement - step
                     } else {
                         xMovement + step

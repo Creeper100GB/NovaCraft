@@ -106,6 +106,15 @@ open class ValueGroup(
     var base: ValueGroup? = null
 
     /**
+     * Allows a [ValueGroup] to migrate old config values
+     * to a new structure during deserialization.
+     *
+     * Override this method instead of adding `instanceof` checks
+     * to the deserialization code.
+     */
+    open fun migrate(values: Map<String, JsonObject>) {}
+
+    /**
      * The base key used when [base] is null,
      * otherwise the [baseKey] from [base]
      * is used when its base is null and so on.

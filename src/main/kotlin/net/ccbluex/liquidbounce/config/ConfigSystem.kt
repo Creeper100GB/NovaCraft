@@ -270,10 +270,7 @@ object ConfigSystem {
             .map { valueElement -> valueElement.asJsonObject }
             .associateBy { valueObj -> valueObj["name"].asString!! }
 
-        // Migration Code for KillAura's Range Values
-        if (valueGroup is ModuleKillAura) {
-            valueGroup.range.migrateFromValues(values)
-        }
+        valueGroup.migrate(values)
 
         for (value in valueGroup.inner) {
             val currentElement = values[value.name]

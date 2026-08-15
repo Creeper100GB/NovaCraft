@@ -80,18 +80,19 @@ object BlurEffectRenderer : MinecraftShortcuts, EventListener {
 
         val raw = overlayRenderTargetHolder.raw ?: return
         val overlayTexture = raw.colorTextureView
+        val mainTexture = mc.mainRenderTarget.colorTextureView ?: return
         mc.mainRenderTarget
             .createRenderPass({ "GUI blur pass" })
             .use { pass ->
                 // Draw blur areas
                 pass.setPipeline(ClientRenderPipelines.GuiBlur)
-                pass.bindTexture("texture0", mc.mainRenderTarget.colorTextureView, overlaySampler)
+                pass.bindTexture("texture0", mainTexture, overlaySampler)
                 pass.bindTexture("overlay", overlayTexture, overlaySampler)
                 pass.setUniform(ClientUniformDefine.GUI_BLUR.uboName, GUI_BLUR_UNIFORM_BUFFER)
                 pass.draw(0, 3)
             }
 
-        mc.mainRenderTarget.colorTextureView
+        mainTexture
             .createRenderPass({ "GUI blur overlay blit pass" })
             .use { pass ->
                 // Blit overlay texture

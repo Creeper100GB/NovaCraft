@@ -30,6 +30,7 @@ import net.ccbluex.liquidbounce.render.engine.font.GlyphPage
 import net.ccbluex.liquidbounce.render.engine.font.GlyphPage.Companion
 import net.ccbluex.liquidbounce.render.engine.font.GlyphRenderInfo
 import net.ccbluex.liquidbounce.render.engine.font.FontStyle
+import net.ccbluex.liquidbounce.utils.client.logger
 import net.ccbluex.liquidbounce.utils.render.asTexture
 import net.ccbluex.liquidbounce.utils.render.toNativeImage
 import java.awt.Dimension
@@ -125,7 +126,7 @@ class DynamicGlyphPage(val atlasSize: Dimension = DEFAULT_ATLAS_SIZE, fontHeight
 
     private fun updateNativeTexture(generationInfo: Companion.CharacterGenerationInfo, glyph: GlyphRenderInfo) {
         val pixels = texture.pixels ?: run {
-            net.ccbluex.liquidbounce.utils.client.logger.warn("DynamicGlyphPage texture pixels are null, skipping update")
+            logger.warn("DynamicGlyphPage texture pixels are null, skipping update")
             return
         }
 

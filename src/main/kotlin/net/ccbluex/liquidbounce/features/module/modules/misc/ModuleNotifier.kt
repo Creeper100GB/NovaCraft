@@ -21,6 +21,7 @@ package net.ccbluex.liquidbounce.features.module.modules.misc
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
+import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.events.NotificationEvent
 import net.ccbluex.liquidbounce.event.events.PacketEvent
 import net.ccbluex.liquidbounce.event.events.PlayerTickEvent
@@ -198,6 +199,18 @@ object ModuleNotifier : ClientModule("Notifier", ModuleCategories.MISC) {
         itemConsumptionCache.clear()
         heldItemCache.clear()
         observedPlayers.clear()
+    }
+
+    @Suppress("unused")
+    private val pruneHandler = handler<GameTickEvent> {
+        val onlineIds = network.onlinePlayers.mapTo(ObjectOpenHashSet()) { it.profile.id }
+
+        totemPopCounter.keys.removeIf { it !in onlineIds }
+        observedPlayers.removeIf { it !in onlineIds }
+        itemConsumptionCache.keys.removeIf { it !in onlineIds }
+        heldItemCache.keys.removeIf { it !in onlineIds }
+        uuidGameModeCache.keys.removeIf { it !in onlineIds }
+        uuidNameCache.keys.removeIf { it !in onlineIds }
     }
 
     private fun handlePlayerAdd(entry: ClientboundPlayerInfoUpdatePacket.Entry) {

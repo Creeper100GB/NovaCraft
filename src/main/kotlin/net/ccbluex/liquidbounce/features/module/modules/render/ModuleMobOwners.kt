@@ -32,6 +32,7 @@ import net.minecraft.world.entity.animal.equine.AbstractHorse
 import net.minecraft.world.entity.projectile.Projectile
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Semaphore
 
 /**
  * MobOwners module
@@ -41,9 +42,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 object ModuleMobOwners : ClientModule("MobOwners", ModuleCategories.RENDER) {
 
+    private const val MAX_CACHE_SIZE = 512
+    private const val MAX_CONCURRENT_REQUESTS = 4
+
     private val projectiles by boolean("Projectiles", false)
 
     private val uuidNameCache = ConcurrentHashMap<UUID, FormattedCharSequence>()
+    private val apiSemaphore = Semaphore(MAX_CONCURRENT_REQUESTS)
 
     fun getOwnerInfoText(entity: Entity?): FormattedCharSequence? {
         if (entity == null || !this.running) {
@@ -79,15 +84,25 @@ object ModuleMobOwners : ClientModule("MobOwners", ModuleCategories.RENDER) {
 
     @Suppress("SwallowedException")
     private fun getFromMojangApi(ownerId: UUID): FormattedCharSequence {
+        if (uuidNameCache.size >= MAX_CACHE_SIZE) {
+            // Evict the loading/placeholder entries first, keep resolved names.
+            uuidNameCache.entries.removeIf { it.value === LOADING_TEXT }
+        }
+
         return uuidNameCache.putIfAbsent(ownerId, LOADING_TEXT) ?: run {
             withScope {
                 uuidNameCache[ownerId] = try {
-                    val uuidAsString = ownerId.toString().replace("-", "")
-                    val response = MojangApi.getNames(uuidAsString)
+                    apiSemaphore.acquire()
+                    try {
+                        val uuidAsString = ownerId.toString().replace("-", "")
+                        val response = MojangApi.getNames(uuidAsString)
 
-                    val entityName = response.first { it.changedToAt == null }.name
+                        val entityName = response.first { it.changedToAt == null }.name
 
-                    FormattedCharSequence.forward(entityName, Style.EMPTY)
+                        FormattedCharSequence.forward(entityName, Style.EMPTY)
+                    } finally {
+                        apiSemaphore.release()
+                    }
                 } catch (e: CancellationException) {
                     CANCELED_TEXT
                 } catch (e: Exception) {

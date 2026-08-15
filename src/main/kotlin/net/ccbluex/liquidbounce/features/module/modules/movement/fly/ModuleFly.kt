@@ -19,7 +19,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.movement.fly
 
 import net.ccbluex.liquidbounce.config.types.group.ToggleableValueGroup
-import net.ccbluex.liquidbounce.event.events.PacketEvent
+import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.events.PlayerStrideEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.ClientModule
@@ -50,7 +50,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.fly.modes.vulca
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.modes.vulcan.FlyVulcan286Teleport
 import net.ccbluex.liquidbounce.utils.client.chat
 import net.ccbluex.liquidbounce.utils.client.markAsError
-import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
+import net.ccbluex.liquidbounce.utils.movement.SetbackTracker
 
 /**
  * Fly module
@@ -118,9 +118,8 @@ object ModuleFly : ClientModule("Fly", ModuleCategories.MOVEMENT, aliases = list
     private val disableOnSetback by boolean("DisableOnSetback", false)
 
     @Suppress("unused")
-    private val packetHandler = handler<PacketEvent> { event ->
-        // Setback detection
-        if (event.packet is ClientboundPlayerPositionPacket && disableOnSetback) {
+    private val gameTickHandler = handler<GameTickEvent> {
+        if (disableOnSetback && SetbackTracker.consumeSetbackForTick()) {
             chat(markAsError(message("setbackDetected")))
             enabled = false
         }

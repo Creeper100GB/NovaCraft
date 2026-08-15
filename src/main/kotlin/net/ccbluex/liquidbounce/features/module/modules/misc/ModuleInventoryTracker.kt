@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.ccbluex.liquidbounce.event.events.EntityEquipmentChangeEvent
 import net.ccbluex.liquidbounce.event.events.ItemLoreQueryEvent
 import net.ccbluex.liquidbounce.event.events.WorldChangeEvent
+import net.ccbluex.liquidbounce.event.events.WorldEntityRemoveEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.command.commands.module.CommandInvsee
 import net.ccbluex.liquidbounce.features.module.ClientModule
@@ -103,6 +104,15 @@ object ModuleInventoryTracker : ClientModule("InventoryTracker", ModuleCategorie
 
     @Suppress("unused")
     private val worldChangeHandler = handler<WorldChangeEvent> { reset() }
+
+    @Suppress("unused")
+    private val entityRemoveHandler = handler<WorldEntityRemoveEvent> { event ->
+        val entity = event.entity
+        if (entity is RemotePlayer && !ModuleAntiBot.isBot(entity)) {
+            inventoryMap.remove(entity.uuid)
+            playerMap.remove(entity.uuid)
+        }
+    }
 
     private fun reset() {
         val players = world.players().associateBy { it.uuid }

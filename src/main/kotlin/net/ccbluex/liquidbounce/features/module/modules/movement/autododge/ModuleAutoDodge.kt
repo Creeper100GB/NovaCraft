@@ -196,7 +196,9 @@ object ModuleAutoDodge : ClientModule("AutoDodge", ModuleCategories.COMBAT) {
 
         // If the evading packet is less than one player hitbox away from the current position, we should rather
         // call the evasion a failure
-        if (bestPacketIdx != null && bestPacketPosition != null && bestPacketPosition.distanceToSqr(player.position()) > MIN_PACKET_DISTANCE_SQ) {
+        if (bestPacketIdx != null && bestPacketPosition != null &&
+            bestPacketPosition.distanceToSqr(player.position()) > MIN_PACKET_DISTANCE_SQ
+        ) {
             return EvadingPacket(bestPacketIdx, bestTimeToImpact)
         }
 
