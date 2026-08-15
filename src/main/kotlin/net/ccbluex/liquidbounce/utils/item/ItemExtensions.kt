@@ -106,10 +106,12 @@ fun ClientLevel.createItem(raw: String) = ItemParser(registryAccess())
  *
  * @docs https://minecraft.gamepedia.com/Commands/give
  */
-fun createItem(stack: String, amount: Int = 1): ItemStack =
-    ItemParser(mc.level!!.registryAccess()).parse(StringReader(stack)).let {
+fun createItem(stack: String, amount: Int = 1): ItemStack {
+    val level = mc.level ?: return ItemStack.EMPTY
+    return ItemParser(level.registryAccess()).parse(StringReader(stack)).let {
         ItemInput(it.item, it.components).createItemStack(amount)
     }
+}
 
 /**
  * Set player inventory item (Creative mode only)

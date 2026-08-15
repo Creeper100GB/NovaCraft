@@ -55,16 +55,18 @@ object PreferFavourableBlocks : Comparator<ItemStack> {
 
 object PreferSolidBlocks : Comparator<ItemStack> {
     override fun compare(o1: ItemStack, o2: ItemStack): Int {
+        val level = mc.level ?: return 0
         return compareValuesBy(o1, o2) {
-            it.defaultBlockState().isRedstoneConductor(mc.level!!, BlockPos.ZERO)
+            it.defaultBlockState().isRedstoneConductor(level, BlockPos.ZERO)
         }
     }
 }
 
 object PreferFullCubeBlocks : Comparator<ItemStack> {
     override fun compare(o1: ItemStack, o2: ItemStack): Int {
+        val level = mc.level ?: return 0
         return compareValuesBy(o1, o2) {
-            it.defaultBlockState().isCollisionShapeFullBlock(mc.level!!, BlockPos.ZERO)
+            it.defaultBlockState().isCollisionShapeFullBlock(level, BlockPos.ZERO)
         }
     }
 
@@ -111,7 +113,8 @@ class PreferAverageHardBlocks(private val neutralRange: Boolean) : Comparator<It
     }
 
     private fun hardnessDist(stack: ItemStack): Double {
-        val hardness = stack.defaultBlockState().getDestroySpeed(mc.level!!, BlockPos.ZERO)
+        val level = mc.level ?: return Double.MAX_VALUE
+        val hardness = stack.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO)
 
         // If neutral range is enabled, items with a specific range of hardness values should be considered ideal.
         if (this.neutralRange && hardness in GOOD_HARDNESS_RANGE) {
