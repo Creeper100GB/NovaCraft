@@ -70,24 +70,51 @@ class GoogleTranslateApi(
 
         // sl empty -> HTTP 400
         // tl empty | text empty -> result empty
-        return if (sourceLanguage is TranslateLanguage.Auto) {
-            val arr = response.parse<JsonArray>().array(0)!!
-            val result = arr.string(0)!!
-            val detectedLanguage = arr.string(1)!!
-            TranslationResult.Success(
-                origin = text,
-                translation = result,
-                fromLanguage = TranslateLanguage.of(detectedLanguage),
-                toLanguage = targetLanguage,
-            )
-        } else {
-            val result = response.parse<JsonArray>().string(0)!!
-            TranslationResult.Success(
-                origin = text,
-                translation = result,
-                fromLanguage = sourceLanguage,
-                toLanguage = targetLanguage
-            )
+        return try {
+            val parsed = response.parse<JsonArray>()
+            if (sourceLanguage is TranslateLanguage.Auto) {
+                parseAutoResult(parsed, text, targetLanguage)
+            } else {
+                parseExplicitResult(parsed, text, sourceLanguage, targetLanguage)
+            }
+        } catch (e: Exception) {
+            TranslationResult.Failure(e)
         }
     }
+
+    @Suppress("MaxLineLength")
+    private fun parseAutoResult(
+        parsed: JsonArray,
+        text: String,
+        targetLanguage: TranslateLanguage,
+    ): TranslationResult {
+        val arr = parsed.array(0) ?: return malformed()
+        val result = arr.string(0) ?: return malformed()
+        val detectedLanguage = arr.string(1) ?: return malformed()
+        return TranslationResult.Success(
+            origin = text,
+            translation = result,
+            fromLanguage = TranslateLanguage.of(detectedLanguage),
+            toLanguage = targetLanguage,
+        )
+    }
+
+    private fun parseExplicitResult(
+        parsed: JsonArray,
+        text: String,
+        sourceLanguage: TranslateLanguage,
+        targetLanguage: TranslateLanguage,
+    ): TranslationResult {
+        val result = parsed.string(0) ?: return malformed()
+        return TranslationResult.Success(
+            origin = text,
+            translation = result,
+            fromLanguage = sourceLanguage,
+            toLanguage = targetLanguage
+        )
+    }
+
+    private fun malformed(): TranslationResult = TranslationResult.Failure(
+        IllegalStateException("Malformed Google Translate response")
+    )
 }

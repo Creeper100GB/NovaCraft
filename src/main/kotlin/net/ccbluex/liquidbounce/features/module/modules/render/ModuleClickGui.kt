@@ -177,8 +177,11 @@ object ModuleClickGui :
         if (wasOpen) {
             mc.setScreen(null)
         }
-        standaloneScreen.close()
-        this.standaloneScreen = null
+        try {
+            standaloneScreen.close()
+        } finally {
+            this.standaloneScreen = null
+        }
         
         // Only bother updating now if it was open before.
         if (wasOpen) {

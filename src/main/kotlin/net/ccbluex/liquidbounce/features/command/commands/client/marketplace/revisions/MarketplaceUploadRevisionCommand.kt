@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
 import net.ccbluex.liquidbounce.features.command.builder.ParameterBuilder
 import net.ccbluex.liquidbounce.features.command.preset.accountOrException
 import net.ccbluex.liquidbounce.features.cosmetic.ClientAccountManager
+import net.ccbluex.liquidbounce.features.marketplace.MarketplaceManager
 import net.ccbluex.liquidbounce.lang.translation
 import net.ccbluex.liquidbounce.utils.client.chat
 import net.ccbluex.liquidbounce.utils.client.logger
@@ -86,7 +87,13 @@ object MarketplaceUploadRevisionCommand : Command.Factory {
             val changelog = (args.getOrNull(3) as? Array<*>)?.joinToString(" ")
             val dependencies = args.getOrNull(4) as? String
 
-            val file = File(filePath)
+            // Only allow files inside the marketplace folder to prevent
+            // uploading arbitrary files from the filesystem.
+            val marketplaceRoot = MarketplaceManager.marketplaceRoot.canonicalFile
+            val file = File(filePath).canonicalFile
+            if (!file.path.startsWith(marketplaceRoot.path + File.separator)) {
+                throw CommandException(translation("liquidbounce.command.marketplace.error.fileNotFound", filePath))
+            }
             if (!file.exists()) {
                 throw CommandException(translation("liquidbounce.command.marketplace.error.fileNotFound", filePath))
             }

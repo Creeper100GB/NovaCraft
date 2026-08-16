@@ -320,9 +320,13 @@ fun BufferedImage.toNativeImage(): NativeImage {
 
 /**
  * Should be called from main thread.
+ *
+ * Releases a previously registered texture under the same [identifier] to avoid
+ * leaking GPU memory when a texture is replaced (e.g. skin or cape re-uploads).
  */
 fun NativeImage.registerTexture(identifier: Identifier): DynamicTexture {
     val texture = asTexture(identifier::toString)
+    mc.textureManager.release(identifier)
     mc.textureManager.register(identifier, texture)
     return texture
 }

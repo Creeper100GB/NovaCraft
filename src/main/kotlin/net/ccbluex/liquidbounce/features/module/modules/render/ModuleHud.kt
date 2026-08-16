@@ -126,14 +126,23 @@ object ModuleHud : ClientModule("HUD", ModuleCategories.RENDER, state = true, hi
 
     @Suppress("unused")
     private val screenHandler = handler<ScreenEvent> { event ->
-        // Close the tab when the HUD is not running, is hiding now, or the player is not in-game
-        if (!enabled || !isVisible) {
-            overlay.close()
+        val shouldHide = !enabled || !isVisible ||
+            event.screen is DisconnectedScreen || event.screen is LevelLoadingScreen
+
+        if (shouldHide) {
+            if (overlay.visible) {
+                overlay.close()
+            }
             return@handler
         }
 
-        // Otherwise, open the tab and set its visibility
-        overlay.visible = event.screen !is DisconnectedScreen && event.screen !is LevelLoadingScreen
+        // Only change the visibility when the state actually changes,
+        // so the browser overlay is not torn down and re-created on every screen event.
+        val shouldBeVisible = event.screen !is DisconnectedScreen && event.screen !is LevelLoadingScreen
+        if (!overlay.visible && shouldBeVisible) {
+            overlay.open()
+        }
+        overlay.visible = shouldBeVisible
     }
 
     @Suppress("unused")

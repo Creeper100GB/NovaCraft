@@ -29,10 +29,11 @@ import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.sqrt
 
 object TrapPlayerSimulation {
-    private val predictedPlayerStatesCache = HashMap<Player, ArrayDeque<PredictedPlayerPos>>()
+    private val predictedPlayerStatesCache = ConcurrentHashMap<Player, ArrayDeque<PredictedPlayerPos>>()
 
     private const val SIMULATION_DISTANCE: Double = 10.0
 

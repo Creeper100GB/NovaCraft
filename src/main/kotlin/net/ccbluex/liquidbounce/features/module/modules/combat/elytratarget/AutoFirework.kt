@@ -116,7 +116,7 @@ internal object AutoFirework : ToggleableValueGroup(ModuleElytraTarget, "AutoFir
                 val slotUpdateFlag = hotbarIndex != null && hotbarIndex != curSlot
 
                 if (slotUpdateFlag) {
-                    player.inventory.selectedSlot = hotbarIndex!!
+                    player.inventory.selectedSlot = hotbarIndex
                     network.sendHeldItemChange(hotbarIndex)
                 }
 

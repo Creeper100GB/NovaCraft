@@ -267,7 +267,8 @@ object VelocityReduce : VelocityMode("Reduce") {
                 }
 
                 if (target == null) {
-                    renderTargetPos = TrackedEntityPosition(renderTarget!!)
+                    val trackedRenderTarget = renderTarget ?: return@handler
+                    renderTargetPos = TrackedEntityPosition(trackedRenderTarget)
                 }
                 lagTicks = lagMaxDelay
             } else if (target != null) {

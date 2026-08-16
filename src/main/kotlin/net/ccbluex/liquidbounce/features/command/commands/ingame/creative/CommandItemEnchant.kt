@@ -21,6 +21,7 @@ package net.ccbluex.liquidbounce.features.command.commands.ingame.creative
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.command.CommandException
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
+import net.ccbluex.liquidbounce.features.command.Parameter.Verificator.Result
 import net.ccbluex.liquidbounce.features.command.builder.ParameterBuilder
 import net.ccbluex.liquidbounce.features.command.builder.enchantment
 import net.ccbluex.liquidbounce.features.module.MinecraftShortcuts
@@ -48,7 +49,13 @@ object CommandItemEnchant : Command.Factory, MinecraftShortcuts {
 
     private val levelParameter = ParameterBuilder
         .begin<String>("level")
-        .verifiedBy(ParameterBuilder.STRING_VALIDATOR)
+        .verifiedBy { sourceText ->
+            if (sourceText == "max" || sourceText.toIntOrNull() != null) {
+                Result.Ok(sourceText)
+            } else {
+                Result.Error("'$sourceText' is not a valid enchantment level (use a number or 'max')")
+            }
+        }
         .autocompletedFrom { listOf("max", "1", "2", "3", "4", "5") }
         .required()
 
@@ -162,11 +169,10 @@ object CommandItemEnchant : Command.Factory, MinecraftShortcuts {
             .build()
     }
 
-    private fun getLevel(arg: String) =
-        if (arg == "max") {
-            null
-        } else {
-            arg.toInt()
+    private fun getLevel(arg: String): Int? =
+        when {
+            arg == "max" -> null
+            else -> arg.toIntOrNull()
         }
 
 

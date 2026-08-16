@@ -86,7 +86,10 @@ open class FakePlayer @JvmOverloads constructor(
             val event = PacketEvent(TransferOrigin.INCOMING, packet, true)
             callEvent(event)
             if (!event.isCancelled) {
-                mc.execute { packet.handle(mc.connection!!) }
+                mc.execute {
+                    val connection = mc.connection ?: return@execute
+                    packet.handle(connection)
+                }
             }
         }
     }

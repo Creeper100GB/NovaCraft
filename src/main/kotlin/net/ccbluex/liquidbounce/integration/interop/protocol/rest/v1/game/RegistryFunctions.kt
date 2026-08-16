@@ -237,13 +237,17 @@ private fun Routing.getRegistry() = get {
         }
 
         "c2s_packet" -> {
-            packetRegistry[PacketFlow.SERVERBOUND]!!.associate {
+            val registry = packetRegistry[PacketFlow.SERVERBOUND]
+                ?: call.respond(httpServiceUnavailable("Packet registry not loaded")).let { return@get }
+            registry.associate {
                 it.toString() to RegistryItemOutput(it.toName(), null)
             }
         }
 
         "s2c_packet" -> {
-            packetRegistry[PacketFlow.CLIENTBOUND]!!.associate {
+            val registry = packetRegistry[PacketFlow.CLIENTBOUND]
+                ?: call.respond(httpServiceUnavailable("Packet registry not loaded")).let { return@get }
+            registry.associate {
                 it.toString() to RegistryItemOutput(it.toName(), null)
             }
         }

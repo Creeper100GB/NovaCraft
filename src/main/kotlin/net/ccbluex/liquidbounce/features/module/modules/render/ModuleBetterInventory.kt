@@ -131,12 +131,12 @@ object ModuleBetterInventory : ClientModule("BetterInventory", ModuleCategories.
             val text = when (TextCooldownProgress.mode) {
                 CooldownProgressMode.PERCENTAGE -> "${(progress * 100f).toInt()}%"
                 CooldownProgressMode.DURATION_TICKS -> {
-                    val entry = player.cooldowns.getCooldown(stack)!!
+                    val entry = player.cooldowns.getCooldown(stack) ?: return
                     val ticks = entry.endTick - entry.currentTick
                     ticks.toString()
                 }
                 CooldownProgressMode.DURATION_SECONDS -> {
-                    val entry = player.cooldowns.getCooldown(stack)!!
+                    val entry = player.cooldowns.getCooldown(stack) ?: return
                     val seconds = (entry.endTick - entry.currentTick) * 0.05f
                     if (seconds > 1) "${seconds.toInt()}s" else "${seconds.toFixed(1)}s"
                 }

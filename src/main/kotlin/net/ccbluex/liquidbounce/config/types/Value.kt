@@ -305,7 +305,12 @@ open class Value<T : Any>(
             }
         }
 
-        set(r ?: error("Failed to deserialize value"))
+        if (r == null) {
+            logger.warn("Failed to deserialize value '${name}', keeping the current value")
+            return
+        }
+
+        set(r)
     }
 
     @Suppress("UNCHECKED_CAST")

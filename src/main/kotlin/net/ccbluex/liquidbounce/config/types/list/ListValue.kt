@@ -27,6 +27,7 @@ import net.ccbluex.liquidbounce.config.gson.stategies.Exclude
 import net.ccbluex.liquidbounce.config.gson.stategies.ProtocolExclude
 import net.ccbluex.liquidbounce.config.types.Value
 import net.ccbluex.liquidbounce.config.types.ValueType
+import net.ccbluex.liquidbounce.utils.client.logger
 import net.ccbluex.liquidbounce.utils.input.HumanInputDeserializer
 import java.util.SequencedSet
 
@@ -72,15 +73,24 @@ open class ListValue<T : MutableCollection<E>, E>(
     final override fun deserializeFrom(gson: Gson, element: JsonElement) {
         val currValue = this.inner
         if (element is JsonArray) {
-            val newItems = Array(element.size()) {
-                gson.fromJson(element[it], this.innerType)
+            val newItems = ArrayList<E>(element.size())
+            for (i in 0 until element.size()) {
+                try {
+                    newItems.add(gson.fromJson(element[i], this.innerType))
+                } catch (e: Exception) {
+                    logger.warn("Failed to deserialize list entry ${element[i]} for '$name', skipping", e)
+                }
             }
             currValue.clear()
             currValue.addAll(newItems)
         } else {
-            val newItem = gson.fromJson(element, this.innerType)
-            currValue.clear()
-            currValue.add(newItem)
+            try {
+                val newItem = gson.fromJson(element, this.innerType)
+                currValue.clear()
+                currValue.add(newItem)
+            } catch (e: Exception) {
+                logger.warn("Failed to deserialize list value for '$name', keeping the current value", e)
+            }
         }
 
         set(currValue) { /** Trigger listener callbacks */ }

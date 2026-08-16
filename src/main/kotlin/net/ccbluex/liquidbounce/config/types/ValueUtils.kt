@@ -57,6 +57,8 @@ fun <V> FileValue.toTextureProperty(
             try {
                 val nativeImage = file.readNativeImage()
                 withContext(Dispatchers.Minecraft) {
+                    // Release the previous GPU texture before uploading a new one
+                    texture?.close()
                     texture = nativeImage.asTexture("(${owner.name}) File texture: ${file.name}")
                 }
             } catch (e: Exception) {
