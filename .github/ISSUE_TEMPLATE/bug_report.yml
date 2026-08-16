@@ -27,8 +27,8 @@ body:
 
   - type: dropdown
     attributes:
-      label: LiquidBounce Branch
-      description: Which edition of LiquidBounce does this bug affect?
+      label: NovaCraft Branch
+      description: Which edition of NovaCraft does this bug affect?
       options:
         - Nextgen
         - Legacy
@@ -38,16 +38,16 @@ body:
 
   - type: input
     attributes:
-      label: LiquidBounce Build/Version
-      description: Which version of LiquidBounce does this bug affect?
-      placeholder: e.g. 0.36.0
+      label: NovaCraft Build/Version
+      description: Which version of NovaCraft does this bug affect?
+      placeholder: e.g. 0.38.1
     validations:
       required: true
 
   - type: dropdown
     attributes:
       label: Operating System
-      description: On which OS is LiquidBounce running?
+      description: On which OS is NovaCraft running?
       multiple: true
       options:
         - macOS

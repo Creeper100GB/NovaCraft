@@ -14,7 +14,7 @@ The following are common reasons for using Java:
 - The framework is designed for Java (such as `mixin`)
 - In some cases, Java code can achieve better readability or performance than Kotlin (if necessary, please describe in the PR)
 
-Contributors: https://github.com/CCBlueX/LiquidBounce/graphs/contributors
+Contributors: https://github.com/Creeper100GB/NovaCraft/graphs/contributors
 
 ## General
 
@@ -49,26 +49,26 @@ of the file:
 
 ```kotlin
 /*
- * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+ * This file is part of NovaCraft (https://github.com/Creeper100GB/NovaCraft)
  *
- * Copyright (c) 2015 - 2026 CCBlueX
+ * Copyright (c) 2015 - 2026 Creeper100GB
  *
- * LiquidBounce is free software: you can redistribute it and/or modify
+ * NovaCraft is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * LiquidBounce is distributed in the hope that it will be useful,
+ * NovaCraft is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ * along with NovaCraft. If not, see <https://www.gnu.org/licenses/>.
  */
 ```
 
-If you are using IntelliJ IDEA, this header will be automatically added when you create a new file ([Config](/.idea/copyright/LiquidBounce.xml)).
+If you are using IntelliJ IDEA, this header will be automatically added when you create a new file ([Config](/.idea/copyright/NovaCraft.xml)).
 
 ### Tags
 
